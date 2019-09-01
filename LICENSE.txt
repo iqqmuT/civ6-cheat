@@ -1,3 +1,4 @@
+Copyright (c) 2019 Tuomas Jaakola
 Copyright (c) 2017 Mike Rosack and playyourdamnturn.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

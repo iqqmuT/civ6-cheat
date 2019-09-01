@@ -1,16 +1,21 @@
-[![Build Status](https://travis-ci.org/pydt/civ6-save-parser.svg?branch=master)](https://travis-ci.org/pydt/civ6-save-parser)
+[![Build Status](https://travis-ci.org/iqqmuT/civ6-cheat.svg?branch=master)](https://travis-ci.org/iqqmuT/civ6-cheat) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-# Civ 6 Save File Parser
+# Civ 6 Cheat Tool
 
-Maintained by the creators of [playyourdamnturn.com](https://www.playyourdamnturn.com).
+Cheat tool for Civ6: edit money amount in save file.
 
-Usage: `node index.js filename.Civ6Save [OPTIONS]`
+## Download
 
-## Options
+* **[Windows](https://github.com/iqqmuT/civ6-cheat/releases/latest/download/civ6-cheat.exe)**
+* **[Mac](https://github.com/iqqmuT/civ6-cheat/releases/latest/download/civ6-cheat-mac)**
+* **[Linux](https://github.com/iqqmuT/civ6-cheat/releases/latest/download/civ6-cheat-linux)**
 
-* **--outputCompressed**: Writes the compressed payload to the working directory.
-* **--simple**: Just outputs the parsed information, no metadata.
+## Running With Node.js
 
-## Use as Module
+```
+node index.js filename.Civ6Save
+```
 
-See tests for module usage, docs will come as the API stabilizes
+## Credits
+
+Built on [Civ 6 Save File Parser](https://github.com/pydt/civ6-save-parser).
