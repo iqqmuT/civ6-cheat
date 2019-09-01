@@ -1,6 +1,6 @@
 {
   "name": "civ6-cheat",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Cheat Tool for Civilization VI.",
   "main": "index.js",
   "scripts": {
