@@ -1,3 +1,21 @@
 language: node_js
 node_js:
-  - "8"
+- '8'
+script:
+- rm -rf build/ && mkdir -p build/
+- npm install -g pkg
+- pkg index.js
+- mv index-linux build/civ6-cheat-linux
+- mv index-macos build/civ6-cheat-macos
+- mv index-win.exe build/civ6-cheat.exe
+deploy:
+  provider: releases
+  api_key:
+    secure: DjsD6b/Mi7ekqvb063sAnvR6T8+U0gm4kpR4sEXYOum3pD54QIM+DKi0hBr9AZZNx6oHZC5BTYvPgnRrPTuA/7IQieVVvcyAkNMAKF5fGv98Ke8IITxDGPErAO2zpceosP+ilbXLligdq1zTEgIBQjZrtqJEo3K/KYpaQbBrMo/b3nYpt7yVKeHOmvP+9/YIaKbvGQdvtA6k+wT3lTaCxC2TQppgioBSIg6Yc9JDLZ8RlIP/M0tPYu5M2U7/3SgXbiGlT896vR9eWvwl6hINnxUTnY4F3INuyTMzFOumT4jS6JQHcUHgi66PeH8axwFMrtKwR4ZdochtSAYFqT9fZT87phWfIBQtG628KZMhVtB5l9Z/poH/Yi1mTQ3qZ8iwFlTJoWUooMqkiqBM/KtOSZFErSBtuXdO9a99TY8LZyhV5VqqR4/2fIxdA3xa9612RrU7e+bTBJxkpQO1xcBVR8fKMU7b+57KPt12YezkB4N4owyxAMZG01ylYY72XS7FsAzptcqgQTqIZVXzVmYJcJqQsOugwJ0BqCgtsXyzo8q1hTFn+le1zmvS3kuo4NDGD5tH6o7dpKEAemHkFdL/4mH9hmopY43DhjHoBeRE4tOkMd1ixb57fVxpZ1S+LIT2Dzfb3JM69RJOYLEsbcHpT+8MZ+3I8bG2s83mdeSddPM=
+  file_glob: true
+  file:
+  - build/*
+  skip_cleanup: true
+  on:
+    tags: true
+    repo: iqqmuT/civ6-cheat
