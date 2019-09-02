@@ -6,8 +6,7 @@ const zlib = require('zlib');
 const iconv = require('iconv-lite');
 const diacritics = require('diacritics');
 const readline = require('readline');
-
-const VERSION = '0.1.0';
+const packageJson = require('./package.json');
 
 const START_ACTOR = Buffer.from([0x58, 0xBA, 0x7F, 0x4C]);
 const ZLIB_HEADER = Buffer.from([0x78, 0x9C]);
@@ -219,13 +218,11 @@ if (!module.parent) {
   if (!argv._.length) {
     console.log('Please pass the Civ6Save filename as the argument to the script.');
   } else {
-    console.log(`Civ6 Cheat Tool v${VERSION} - https://github.com/iqqmut/civ6-cheat`);
+    console.log(`Civ6 Cheat Tool v${packageJson.version} - https://github.com/iqqmut/civ6-cheat`);
     const saveFile = argv._[0];
     const buffer = Buffer.from(fs.readFileSync(saveFile));
     const result = module.exports.parse(buffer, argv);
     // console.log(util.inspect(result.parsed, false, null));
-
-    fs.writeFileSync(path.basename(saveFile) + '.bin', result.compressed);
 
     const rl = readline.createInterface({
       input: process.stdin,

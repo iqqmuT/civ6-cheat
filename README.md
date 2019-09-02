@@ -10,6 +10,8 @@ Cheat tool for Civ6: edit money amount in save file.
 * **[Mac](https://github.com/iqqmuT/civ6-cheat/releases/latest/download/civ6-cheat-macos)**
 * **[Linux](https://github.com/iqqmuT/civ6-cheat/releases/latest/download/civ6-cheat-linux)**
 
+Run program in command line or terminal and pass Civ6Save file as the first argument.
+
 ## Running With Node.js
 
 ```
