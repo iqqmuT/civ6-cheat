@@ -296,24 +296,34 @@ function askMoney(rl, saveFile, result, playerNum) {
   });
 }
 
-// Compresses given data and adds markers after every 64kB chunk.
+// Compresses given data and adds length markers after every (max 64kB) chunk.
 function compressData(data) {
   // use deflate algorithm
   const compressed = zlib.deflateSync(data, {
     finishFlush: zlib.constants.Z_SYNC_FLUSH,
   });
 
-  const chunks = [];
-  chunks.push(END_UNCOMPRESSED);
-
-  const chunkSize = 64 * 1024;
   let pos = 0;
-  while (pos + chunkSize < compressed.length) {
-    chunks.push(compressed.slice(pos, pos + chunkSize));
-    pos += chunkSize;
-    chunks.push(END_UNCOMPRESSED);
+  const chunks = [];
+
+  const addLengthBytes = (len) => {
+    const buf = Buffer.alloc(4);
+    buf.writeUInt32LE(len);
+    chunks.push(buf);
+  };
+
+  // add data in chunks
+  const maxChunkSize = 64 * 1024;
+  while (pos + maxChunkSize < compressed.length) {
+    addLengthBytes(maxChunkSize);
+    chunks.push(compressed.slice(pos, pos + maxChunkSize));
+    pos += maxChunkSize;
   }
+
+  // add last chunk
+  addLengthBytes(compressed.length - pos);
   chunks.push(compressed.slice(pos));
+
   return Buffer.concat(chunks);
 }
 
