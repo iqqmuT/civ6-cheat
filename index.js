@@ -481,7 +481,7 @@ function parseEntry(buffer, state) {
         break;
 
       default:
-        throw new Error('Error parsing at position ' + state.pos + ': ' + JSON.stringify(result));
+        console.warn('[WARN] Unidentified data at position ' + state.pos + ': ' + JSON.stringify(result));
     }
   }
 
