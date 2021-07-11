@@ -244,10 +244,14 @@ function findMoneyPos(idx, buffer) {
     match = false;
     pos = buffer.indexOf(MONEY_MARKERS[0], pos);
     if (pos > -1) {
-      if (Buffer.compare(buffer.slice(pos + 8, pos + 12), MONEY_MARKERS[1]) === 0
-        && Buffer.compare(buffer.slice(pos + 16, pos + 20), MONEY_MARKERS[2]) === 0) {
+      if (Buffer.compare(buffer.slice(pos + 8, pos + 12), MONEY_MARKERS[1]) === 0) {
         if (i === idx) {
-          return pos + 44;
+          if (Buffer.compare(buffer.slice(pos + 16, pos + 20), MONEY_MARKERS[2]) === 0) {
+            return pos + 44;
+          } else {
+            // Gathering Storm save file has different pos
+            return pos + 112;
+          }
         }
         i++;
       }
