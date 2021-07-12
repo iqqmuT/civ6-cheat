@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/iqqmuT/civ6-cheat.svg?branch=master)](https://travis-ci.org/iqqmuT/civ6-cheat) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Build Status](https://travis-ci.com/iqqmuT/civ6-cheat.svg?branch=master)](https://travis-ci.com/iqqmuT/civ6-cheat) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 # Civ 6 Cheat Tool
 
