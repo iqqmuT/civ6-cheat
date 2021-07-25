@@ -10,11 +10,10 @@ script:
 - mv index-win.exe build/civ6-cheat.exe
 deploy:
   provider: releases
-  api_key:
-    secure: iQpT5EdbQbAp7/JluIwDjKMwJZWD1fA0Yss5wyOz38QGMxU0L65gQMVz9zvngsNBp9ww1R5TfDPekJf6WQropcktV/b9zx52oooOEfetPDa7AghvyIOB+EtZAwWHsCv2lnJ7KNK9aD+gp1W4PIDYUfRWOULKTUVHSbj31WqvG1U0xJALvfDkpYN5HRXo7F3b1cAWKsNSmywB+SNCFowMC/Ontpwka5FGgyVbGR9jW8+nFqBGeU+eIGHuRBXmRTKNb2mbFzJqxUok9UZCOm3acDU2q2M0jPIDf7I3daCRBv5YZ7gZ0dnOZOQfkwFvB7QAAz387djpaiFHbu6aHXYLi6gL3YUCU7U2Cm3EmcaxmeyDE4E+90G5zig/NI5ZA0Va9qPpJbXtAGyuQSdFz9SfjRbzquL+p0V0hbACgcKvApJNwBJSapqOerV2CKFax6E9xgptr5nIz4D0ywqh6t84NTNLDHq+NmZa5oEE0+f8cgmYAnjmpsIgq3gS0k1d9jUL1fd6QnqpFXbxyJEwdkQudRdNYqRE+D1YAAKwVK+ZutoSRIINg0QOtUO3rgFkdKFeBXKas3I3FUGmQkaHosv23btgncY9erqdvd0XMe5Iby+1cof4CrzaueYM7+jYvRExBzD28thAoBpeZ0am1tTwvPc2U+D6FlqrACJM1dbY7CQ=
   file_glob: true
   file:
   - build/*
+  edge: true
   skip_cleanup: true
   on:
     tags: true
