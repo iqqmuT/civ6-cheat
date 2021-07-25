@@ -3,7 +3,7 @@ node_js:
 - '14'
 script:
 - rm -rf build/ && mkdir -p build/
-- npm install -g pkg
+- npm install -g pkg@5.3.1
 - pkg index.js
 - mv index-linux build/civ6-cheat-linux
 - mv index-macos build/civ6-cheat-macos
