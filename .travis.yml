@@ -1,6 +1,6 @@
 language: node_js
 node_js:
-- '8'
+- '14'
 script:
 - rm -rf build/ && mkdir -p build/
 - npm install -g pkg
