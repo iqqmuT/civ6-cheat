@@ -17,6 +17,7 @@ const MONEY_MARKERS = [
   Buffer.from([0x21, 0xC9, 0xAF, 0x2F]),
   Buffer.from([0x57, 0x73, 0x4A, 0x5A]),
   Buffer.from([0xB7, 0xEA, 0xA0, 0xF1]),
+  Buffer.from([0xBC, 0x0A, 0x2B, 0xDE]),
 ];
 
 const GAME_DATA = {
@@ -246,8 +247,16 @@ function findMoneyPos(idx, buffer) {
     if (pos > -1) {
       if (Buffer.compare(buffer.slice(pos + 8, pos + 12), MONEY_MARKERS[1]) === 0) {
         if (i === idx) {
+          // approximate money value position found
+          // specific position needs to be interpreted from values around
           if (Buffer.compare(buffer.slice(pos + 16, pos + 20), MONEY_MARKERS[2]) === 0) {
-            return pos + 44;
+            const lastMarkerPos = buffer.indexOf(MONEY_MARKERS[3], pos) - pos;
+            if (lastMarkerPos === 80) {
+              // some save files have money in different position
+              return pos + 48;
+            } else {
+              return pos + 44;
+            }
           } else {
             // Gathering Storm save file has different pos
             return pos + 112;
