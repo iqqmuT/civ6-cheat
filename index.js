@@ -427,7 +427,7 @@ function readState(buffer, state) {
   return state;
 }
 
-function parseEntry(buffer, state) {
+function parseEntry(buffer, state, dontSkip) {
   const typeBuffer = buffer.slice(state.pos + 4, state.pos + 8);
 
   const result = {
@@ -437,7 +437,7 @@ function parseEntry(buffer, state) {
 
   state.pos += 8;
 
-  if (result.marker.readUInt32LE() < 256 || result.type === 0) {
+  if (!dontSkip && (result.marker.readUInt32LE() < 256 || result.type === 0)) {
     result.data = 'SKIP';
   } else if (result.marker.equals(WEIRD_OUTBACK_TYCOON_MARKER)) {
     // Not sure what this is at the end of outback tycoon files, just quit processing at this point
@@ -454,9 +454,11 @@ function parseEntry(buffer, state) {
         break;
 
       case DATA_TYPES.INTEGER:
-      // 0A is an array, but i really only care about getting the length out, which looks like a normal integer
-      case DATA_TYPES.ARRAY_START:
         result.data = readInt(buffer, state);
+        break;
+
+      case DATA_TYPES.ARRAY_START:
+        result.data = readArray0A(buffer, state);
         break;
 
       case 3:
@@ -490,7 +492,7 @@ function parseEntry(buffer, state) {
         break;
 
       case 0x0B:
-        result.data = readArray(buffer, state);
+        result.data = readArray0B(buffer, state);
         break;
 
       default:
@@ -530,7 +532,34 @@ function readString(buffer, state) {
   return result;
 }
 
-function readArray(buffer, state) {
+function readArray0A(buffer, state) {
+  const result = [];
+
+  state.pos += 8;
+  const arrayLen = buffer.readUInt32LE(state.pos);
+  // console.log('array length ' + arrayLen);
+  state.pos += 4;
+
+  for (let i = 0; i < arrayLen; i++) {
+    const index = buffer.readUInt32LE(state.pos);
+
+    if (index > arrayLen) {
+      // If we can't understand the array format, just return what we parsed for length
+      // console.log('Index outside bounds of array at ' + state.pos.toString(16));
+      return arrayLen;
+    }
+
+    // console.log(`reading array index ${index} at ${state.pos.toString(16)}`);
+
+    state = readState(buffer, state);
+    const info = parseEntry(buffer, state, true);
+    result.push(info.data);
+  }
+
+  return result;
+}
+
+function readArray0B(buffer, state) {
   const origState = _.clone(state);
   const result = [];
 
