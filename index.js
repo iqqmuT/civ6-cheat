@@ -236,8 +236,8 @@ if (!module.parent) {
 
 // Helper functions
 
-function findMoneyPos(idx, buffer) {
-  // Money value position can be found by three 4 byte markers
+function findGoldPos(idx, buffer) {
+  // Gold value position can be found by three 4 byte markers
   let match;
   let i = 0;
   let pos = 0;
@@ -247,12 +247,12 @@ function findMoneyPos(idx, buffer) {
     if (pos > -1) {
       if (Buffer.compare(buffer.slice(pos + 8, pos + 12), MONEY_MARKERS[1]) === 0) {
         if (i === idx) {
-          // approximate money value position found
+          // approximate gold value position found
           // specific position needs to be interpreted from values around
           if (Buffer.compare(buffer.slice(pos + 16, pos + 20), MONEY_MARKERS[2]) === 0) {
             const lastMarkerPos = buffer.indexOf(MONEY_MARKERS[3], pos) - pos;
             if (lastMarkerPos === 80) {
-              // some save files have money in different position
+              // some save files have gold in different position
               return pos + 48;
             } else {
               return pos + 44;
@@ -271,18 +271,18 @@ function findMoneyPos(idx, buffer) {
   return -1;
 }
 
-function readMoney(idx, buffer) {
-  const pos = findMoneyPos(idx, buffer);
+function readGold(idx, buffer) {
+  const pos = findGoldPos(idx, buffer);
   if (pos !== -1) {
     return buffer.slice(pos, pos + 4).readUInt32LE();
   }
   return 0;
 }
 
-function writeMoney(idx, buffer, money) {
-  const value = money * 256
+function writeGold(idx, buffer, gold) {
+  const value = gold * 256
 
-  const pos = findMoneyPos(idx, buffer);
+  const pos = findGoldPos(idx, buffer);
   if (pos === -1) {
     return;
   }
@@ -295,15 +295,15 @@ function writeMoney(idx, buffer, money) {
   }
 }
 
-function askMoney(rl, saveFile, result, playerNum) {
-  const moneyNow = parseInt(readMoney(playerNum - 1, result.compressed) / 256);
-  rl.question(`Enter new amount of money (${moneyNow}): `, (strAnswer) => {
-    let answer = parseInt(strAnswer || moneyNow);
+function askGold(rl, saveFile, result, playerNum) {
+  const goldNow = parseInt(readGold(playerNum - 1, result.compressed) / 256);
+  rl.question(`Enter new amount of gold (${goldNow}): `, (strAnswer) => {
+    let answer = parseInt(strAnswer || goldNow);
     if (isNaN(answer)) {
-      answer = moneyNow;
+      answer = goldNow;
     }
 
-    writeMoney(playerNum - 1, result.compressed, answer);
+    writeGold(playerNum - 1, result.compressed, answer);
 
     printMainMenu(rl, saveFile, result);
   });
@@ -369,7 +369,7 @@ function printMainMenu(rl, saveFile, result) {
       rl.close();
       save(saveFile, result);
     } else {
-      askMoney(rl, saveFile, result, answer);
+      askGold(rl, saveFile, result, answer);
     }
   });
 }

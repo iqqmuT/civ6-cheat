@@ -2,7 +2,7 @@
 
 # Civ 6 Cheat Tool
 
-Cheat tool for Civ6: edit money amount in save file.
+Cheat tool for Civ6: edit gold amount in save file.
 
 ## Download
 
