@@ -14,8 +14,8 @@ Run program in command line or terminal and pass Civ6Save file as the first argu
 
 ## Where is the save location for Civ 6?
 
-~/.local/share/aspyr-media/Sid Meier's Civilization VI/Saves/
-C:\Users\user\Documents\My Games\Sid Meier's Civilization VI (Epic)\Saves
+* Linux: `~/.local/share/aspyr-media/Sid Meier's Civilization VI/Saves/`
+* Windows: `%USERPROFILE%\Documents\My Games\Sid Meier's Civilization VI (Epic)\Saves`
 
 ## Running With Node.js
 
