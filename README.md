@@ -12,6 +12,11 @@ Cheat tool for Civ6: edit gold amount in save file.
 
 Run program in command line or terminal and pass Civ6Save file as the first argument.
 
+## Where is the save location for Civ 6?
+
+* Linux: `~/.local/share/aspyr-media/Sid Meier's Civilization VI/Saves/`
+* Windows: `%USERPROFILE%\Documents\My Games\Sid Meier's Civilization VI (Epic)\Saves`
+
 ## Running With Node.js
 
 ```
