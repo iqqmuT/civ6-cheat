@@ -26,7 +26,7 @@
     "chai": "^3.5.0",
     "eslint": "^5.11.1",
     "eslint-config-google": "^0.11.0",
-    "mocha": "^9.0.2"
+    "mocha": "^9.2.2"
   },
   "files": [
     "index.js"
