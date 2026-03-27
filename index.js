@@ -236,56 +236,87 @@ if (!module.parent) {
 
 // Helper functions
 
-function findGoldPos(idx, buffer) {
-  // Gold value position can be found by three 4 byte markers
-  let match;
+// Detects save type: 'gs' (Gathering Storm), 'rf' (Rise & Fall), 'standard'
+function detectSaveType(buffer, markerPos) {
+  const hasThirdMarker = Buffer.compare(buffer.slice(markerPos + 16, markerPos + 20), MONEY_MARKERS[2]) === 0;
+  if (!hasThirdMarker) {
+    return 'gs';
+  }
+  const fourthMarkerOffset = buffer.indexOf(MONEY_MARKERS[3], markerPos) - markerPos;
+  if (fourthMarkerOffset === 88) {
+    return 'rf';
+  }
+  return 'standard';
+}
+
+function findMarkerPos(idx, buffer) {
   let i = 0;
   let pos = 0;
   while (pos > -1) {
-    match = false;
     pos = buffer.indexOf(MONEY_MARKERS[0], pos);
     if (pos > -1) {
       if (Buffer.compare(buffer.slice(pos + 8, pos + 12), MONEY_MARKERS[1]) === 0) {
         if (i === idx) {
-          // approximate gold value position found
-          // specific position needs to be interpreted from values around
-          if (Buffer.compare(buffer.slice(pos + 16, pos + 20), MONEY_MARKERS[2]) === 0) {
-            const lastMarkerPos = buffer.indexOf(MONEY_MARKERS[3], pos) - pos;
-            if (lastMarkerPos === 80) {
-              // some save files have gold in different position
-              return pos + 48;
-            } else {
-              return pos + 44;
-            }
-          } else {
-            // Gathering Storm save file has different pos
-            return pos + 112;
-          }
+          return pos;
         }
         i++;
       }
       pos++;
     }
   }
-  // not found
   return -1;
+}
+
+function findGoldPos(idx, buffer) {
+  const markerPos = findMarkerPos(idx, buffer);
+  if (markerPos === -1) return -1;
+
+  const saveType = detectSaveType(buffer, markerPos);
+  if (saveType === 'gs') {
+    return markerPos + 112;
+  }
+  // Standard and Rise & Fall both use marker + 49
+  return markerPos + 49;
+}
+
+function findFaithPos(idx, buffer) {
+  const markerPos = findMarkerPos(idx, buffer);
+  if (markerPos === -1) return -1;
+
+  const saveType = detectSaveType(buffer, markerPos);
+  if (saveType === 'gs') {
+    return markerPos - 11782;
+  } else if (saveType === 'rf') {
+    return markerPos - 5820;
+  }
+  // Standard
+  return markerPos - 5641;
+}
+
+function isGatheringStorm(idx, buffer) {
+  const markerPos = findMarkerPos(idx, buffer);
+  if (markerPos === -1) return false;
+  return detectSaveType(buffer, markerPos) === 'gs';
 }
 
 function readGold(idx, buffer) {
   const pos = findGoldPos(idx, buffer);
-  if (pos !== -1) {
-    return buffer.slice(pos, pos + 4).readUInt32LE();
+  if (pos === -1) return 0;
+
+  const rawValue = buffer.slice(pos, pos + 4).readUInt32LE();
+  // Gathering Storm stores gold as value * 256
+  if (isGatheringStorm(idx, buffer)) {
+    return Math.floor(rawValue / 256);
   }
-  return 0;
+  return rawValue;
 }
 
 function writeGold(idx, buffer, gold) {
-  const value = gold * 256
-
   const pos = findGoldPos(idx, buffer);
-  if (pos === -1) {
-    return;
-  }
+  if (pos === -1) return;
+
+  // Gathering Storm stores gold as value * 256
+  const value = isGatheringStorm(idx, buffer) ? gold * 256 : gold;
 
   const valueBuffer = Buffer.alloc(4);
   valueBuffer.writeUInt32LE(value);
@@ -295,8 +326,26 @@ function writeGold(idx, buffer, gold) {
   }
 }
 
+function readFaith(idx, buffer) {
+  const pos = findFaithPos(idx, buffer);
+  if (pos === -1) return 0;
+  return buffer.slice(pos, pos + 4).readUInt32LE();
+}
+
+function writeFaith(idx, buffer, faith) {
+  const pos = findFaithPos(idx, buffer);
+  if (pos === -1) return;
+
+  const valueBuffer = Buffer.alloc(4);
+  valueBuffer.writeUInt32LE(faith);
+
+  for (let i = 0; i < 4; i++) {
+    buffer[pos + i] = valueBuffer[i];
+  }
+}
+
 function askGold(rl, saveFile, result, playerNum) {
-  const goldNow = parseInt(readGold(playerNum - 1, result.compressed) / 256);
+  const goldNow = readGold(playerNum - 1, result.compressed);
   rl.question(`Enter new amount of gold (${goldNow}): `, (strAnswer) => {
     let answer = parseInt(strAnswer || goldNow);
     if (isNaN(answer)) {
@@ -304,6 +353,20 @@ function askGold(rl, saveFile, result, playerNum) {
     }
 
     writeGold(playerNum - 1, result.compressed, answer);
+
+    askFaith(rl, saveFile, result, playerNum);
+  });
+}
+
+function askFaith(rl, saveFile, result, playerNum) {
+  const faithNow = readFaith(playerNum - 1, result.compressed);
+  rl.question(`Enter new amount of faith (${faithNow}): `, (strAnswer) => {
+    let answer = parseInt(strAnswer || faithNow);
+    if (isNaN(answer)) {
+      answer = faithNow;
+    }
+
+    writeFaith(playerNum - 1, result.compressed, answer);
 
     printMainMenu(rl, saveFile, result);
   });
